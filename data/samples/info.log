@@ -1,0 +1,209 @@
+{"time":"2024-10-16T15:17:06.428662086-04:00","level":"INFO","msg":"Application started","config":{"database_type":"sqlite","database_dir":"./data","database_file":"mindnoscape.db","log_folder":"./logs","command_log":"commands.log","error_log":"errors.log","info_log":"info.log","default_user":"a","default_user_active":true,"default_user_password":""}}
+{"time":"2024-10-16T15:17:06.428715524-04:00","level":"INFO","msg":"Initializing storage","databaseType":"sqlite","databaseDir":"./data"}
+{"time":"2024-10-16T15:17:06.428718399-04:00","level":"INFO","msg":"Opening SQLite database","dbPath":"mindnoscape.db"}
+{"time":"2024-10-16T15:17:06.441435172-04:00","level":"INFO","msg":"SQLite database opened successfully"}
+{"time":"2024-10-16T15:17:06.441445076-04:00","level":"INFO","msg":"Initializing database schema"}
+{"time":"2024-10-16T15:17:06.441446854-04:00","level":"INFO","msg":"Initializing database schema"}
+{"time":"2024-10-16T15:17:06.441449037-04:00","level":"DEBUG","msg":"Executing query","query":"\n\t\tCREATE TABLE IF NOT EXISTS users (\n\t\t\tid INTEGER PRIMARY KEY AUTOINCREMENT,\n\t\t\tusername TEXT UNIQUE NOT NULL,\n\t\t\tpassword_hash BLOB NOT NULL,\n\t\t\tactive BOOLEAN NOT NULL DEFAULT 1,\n\t\t\tcreated DATETIME NOT NULL,\n\t\t\tupdated DATETIME NOT NULL\n\t\t);\n\n\t\tCREATE TABLE IF NOT EXISTS mindmaps (\n\t\t\tid INTEGER PRIMARY KEY AUTOINCREMENT,\n\t\t\tmindmap_name TEXT NOT NULL,\n\t\t\towner TEXT NOT NULL,\n\t\t\tis_public BOOLEAN NOT NULL DEFAULT 0,\n\t\t\tcreated DATETIME NOT NULL,\n\t\t\tupdated DATETIME NOT NULL,\n\t\t\tFOREIGN KEY (owner) REFERENCES users(username),\n\t\t\tUNIQUE (mindmap_name, owner)\n\t\t);\n\t","args":null}
+{"time":"2024-10-16T15:17:06.446506667-04:00","level":"INFO","msg":"Database schema initialized successfully"}
+{"time":"2024-10-16T15:17:06.446519831-04:00","level":"INFO","msg":"Storage initialized successfully"}
+{"time":"2024-10-16T15:17:06.446521843-04:00","level":"INFO","msg":"Storage initialized"}
+{"time":"2024-10-16T15:17:06.446523095-04:00","level":"INFO","msg":"Creating new DataManager"}
+{"time":"2024-10-16T15:17:06.446524485-04:00","level":"INFO","msg":"Creating new UserManager"}
+{"time":"2024-10-16T15:17:06.446525618-04:00","level":"INFO","msg":"UserManager created successfully"}
+{"time":"2024-10-16T15:17:06.446526768-04:00","level":"INFO","msg":"Creating new MindmapManager"}
+{"time":"2024-10-16T15:17:06.44652792-04:00","level":"INFO","msg":"MindmapManager created successfully"}
+{"time":"2024-10-16T15:17:06.446529063-04:00","level":"INFO","msg":"Creating new NodeManager"}
+{"time":"2024-10-16T15:17:06.446530174-04:00","level":"INFO","msg":"NodeManager created successfully"}
+{"time":"2024-10-16T15:17:06.446531269-04:00","level":"DEBUG","msg":"Handling default user logic"}
+{"time":"2024-10-16T15:17:06.446532846-04:00","level":"INFO","msg":"Retrieving users","filter":{"ID":false,"Username":true,"PasswordHash":false,"Active":false}}
+{"time":"2024-10-16T15:17:06.446546309-04:00","level":"INFO","msg":"Retrieving users","filter":{"ID":false,"Username":true,"PasswordHash":false,"Active":false}}
+{"time":"2024-10-16T15:17:06.446548074-04:00","level":"DEBUG","msg":"Querying","args":["a"],"query":"SELECT id, username, password_hash, active, created, updated FROM users WHERE 1=1 AND username = ?"}
+{"time":"2024-10-16T15:17:06.446551146-04:00","level":"INFO","msg":"Users retrieved successfully","count":0}
+{"time":"2024-10-16T15:17:06.446552642-04:00","level":"INFO","msg":"Users retrieved successfully","count":0}
+{"time":"2024-10-16T15:17:06.446553852-04:00","level":"INFO","msg":"Adding new user","username":"a"}
+{"time":"2024-10-16T15:17:06.446555152-04:00","level":"INFO","msg":"Retrieving users","filter":{"ID":false,"Username":true,"PasswordHash":false,"Active":false}}
+{"time":"2024-10-16T15:17:06.44655671-04:00","level":"INFO","msg":"Retrieving users","filter":{"ID":false,"Username":true,"PasswordHash":false,"Active":false}}
+{"time":"2024-10-16T15:17:06.446558154-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, username, password_hash, active, created, updated FROM users WHERE 1=1 AND username = ?","args":["a"]}
+{"time":"2024-10-16T15:17:06.446564371-04:00","level":"INFO","msg":"Users retrieved successfully","count":0}
+{"time":"2024-10-16T15:17:06.446565673-04:00","level":"INFO","msg":"Users retrieved successfully","count":0}
+{"time":"2024-10-16T15:17:06.446566907-04:00","level":"INFO","msg":"Adding new user","user":{"ID":0,"Username":"a","PasswordHash":"","Active":false,"MindmapCount":null}}
+{"time":"2024-10-16T15:17:06.446575586-04:00","level":"INFO","msg":"Transaction started"}
+{"time":"2024-10-16T15:17:06.44657679-04:00","level":"DEBUG","msg":"Executing query","args":["a","",false,"2024-10-16T15:17:06.446467054-04:00","2024-10-16T15:17:06.446467054-04:00"],"query":"INSERT INTO users (username, password_hash, active, created, updated) VALUES (?, ?, ?, ?, ?)"}
+{"time":"2024-10-16T15:17:06.446582745-04:00","level":"INFO","msg":"Transaction committed"}
+{"time":"2024-10-16T15:17:06.446584106-04:00","level":"INFO","msg":"User added successfully","userID":1,"username":"a"}
+{"time":"2024-10-16T15:17:06.446590738-04:00","level":"INFO","msg":"User added successfully","userID":1,"username":"a"}
+{"time":"2024-10-16T15:17:06.446592026-04:00","level":"INFO","msg":"Default user created"}
+{"time":"2024-10-16T15:17:06.446593164-04:00","level":"INFO","msg":"Data manager initialized"}
+{"time":"2024-10-16T15:17:06.446594315-04:00","level":"INFO","msg":"Creating new SessionManager"}
+{"time":"2024-10-16T15:17:06.446595414-04:00","level":"INFO","msg":"Starting cleanup routine"}
+{"time":"2024-10-16T15:17:06.446596435-04:00","level":"INFO","msg":"SessionManager created successfully"}
+{"time":"2024-10-16T15:17:06.446597573-04:00","level":"INFO","msg":"Session manager initialized"}
+{"time":"2024-10-16T15:17:06.446598603-04:00","level":"INFO","msg":"Creating new CLI adapter"}
+{"time":"2024-10-16T15:17:06.446599688-04:00","level":"INFO","msg":"AdapterManager initialized"}
+{"time":"2024-10-16T15:17:06.446600846-04:00","level":"INFO","msg":"Adapter manager initialized"}
+{"time":"2024-10-16T15:17:06.446601915-04:00","level":"DEBUG","msg":"Creating new session through AdapterManager"}
+{"time":"2024-10-16T15:17:06.446603043-04:00","level":"INFO","msg":"Adding new session"}
+{"time":"2024-10-16T15:17:06.446604127-04:00","level":"INFO","msg":"Starting command executor"}
+{"time":"2024-10-16T15:17:06.446605398-04:00","level":"INFO","msg":"New session added","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:06.446606762-04:00","level":"INFO","msg":"New session created","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:06.44660802-04:00","level":"INFO","msg":"Retrieving session","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:06.446609279-04:00","level":"DEBUG","msg":"Session retrieved","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:06.446610624-04:00","level":"INFO","msg":"New CLI session added","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:06.44661192-04:00","level":"INFO","msg":"CLI instance created","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:06.446613108-04:00","level":"INFO","msg":"CLI instance created"}
+{"time":"2024-10-16T15:17:09.907948958-04:00","level":"INFO","msg":"Command parsed","command":{"Scope":"u","Operation":"s","Args":["a"]}}
+{"time":"2024-10-16T15:17:09.908016457-04:00","level":"INFO","msg":"Processing command through adapter manager","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"u","Operation":"s","Args":["a"]}}
+{"time":"2024-10-16T15:17:09.908033539-04:00","level":"INFO","msg":"Running command in session","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"u","Operation":"s","Args":["a"]}}
+{"time":"2024-10-16T15:17:09.908035613-04:00","level":"INFO","msg":"Validating command","scope":"user","operation":"select"}
+{"time":"2024-10-16T15:17:09.908037356-04:00","level":"DEBUG","msg":"Validating scope and operation","scope":"user","operation":"select"}
+{"time":"2024-10-16T15:17:09.908041945-04:00","level":"DEBUG","msg":"Validating user command","operation":"select"}
+{"time":"2024-10-16T15:17:09.908043485-04:00","level":"DEBUG","msg":"Processing command","command":{"Scope":"user","Operation":"select","Args":["a"]},"sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:09.908046497-04:00","level":"INFO","msg":"Handling user select command","args":["a"]}
+{"time":"2024-10-16T15:17:09.908048328-04:00","level":"DEBUG","msg":"Attempting to select user","username":"a"}
+{"time":"2024-10-16T15:17:09.908049807-04:00","level":"INFO","msg":"Retrieving users","filter":{"ID":false,"Username":true,"PasswordHash":false,"Active":false}}
+{"time":"2024-10-16T15:17:09.908053222-04:00","level":"INFO","msg":"Retrieving users","filter":{"ID":false,"Username":true,"PasswordHash":false,"Active":false}}
+{"time":"2024-10-16T15:17:09.908054905-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, username, password_hash, active, created, updated FROM users WHERE 1=1 AND username = ?","args":["a"]}
+{"time":"2024-10-16T15:17:09.908157453-04:00","level":"INFO","msg":"Users retrieved successfully","count":1}
+{"time":"2024-10-16T15:17:09.908160292-04:00","level":"INFO","msg":"Users retrieved successfully","count":1}
+{"time":"2024-10-16T15:17:09.908161648-04:00","level":"DEBUG","msg":"User selected and set in session","username":"a"}
+{"time":"2024-10-16T15:17:09.908163202-04:00","level":"INFO","msg":"User selected successfully","username":"a"}
+{"time":"2024-10-16T15:17:09.90816453-04:00","level":"DEBUG","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:09.908166017-04:00","level":"INFO","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:09.908167416-04:00","level":"INFO","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"u","Operation":"s","Args":["a"]}}
+{"time":"2024-10-16T15:17:17.110172439-04:00","level":"INFO","msg":"Command parsed","command":{"Scope":"m","Operation":"a","Args":["new"]}}
+{"time":"2024-10-16T15:17:17.110216818-04:00","level":"INFO","msg":"Processing command through adapter manager","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"a","Args":["new"]}}
+{"time":"2024-10-16T15:17:17.110228131-04:00","level":"INFO","msg":"Running command in session","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"a","Args":["new"]}}
+{"time":"2024-10-16T15:17:17.110230992-04:00","level":"INFO","msg":"Validating command","scope":"mindmap","operation":"add"}
+{"time":"2024-10-16T15:17:17.110233216-04:00","level":"DEBUG","msg":"Validating scope and operation","operation":"add","scope":"mindmap"}
+{"time":"2024-10-16T15:17:17.110235349-04:00","level":"DEBUG","msg":"Validating mindmap command","operation":"add"}
+{"time":"2024-10-16T15:17:17.110237208-04:00","level":"DEBUG","msg":"Processing command","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"mindmap","Operation":"add","Args":["new"]}}
+{"time":"2024-10-16T15:17:17.11023968-04:00","level":"INFO","msg":"Handling mindmap add command","args":["new"]}
+{"time":"2024-10-16T15:17:17.110241912-04:00","level":"DEBUG","msg":"Adding new mindmap","mindmapName":"new"}
+{"time":"2024-10-16T15:17:17.110243796-04:00","level":"INFO","msg":"Adding new mindmap","username":"a","mindmapName":"new"}
+{"time":"2024-10-16T15:17:17.110245914-04:00","level":"INFO","msg":"Retrieving mindmaps","username":"a","filter":{"ID":false,"Name":true,"Owner":false,"IsPublic":false}}
+{"time":"2024-10-16T15:17:17.110265701-04:00","level":"INFO","msg":"Retrieving mindmaps","username":"a","filter":{"ID":false,"Name":true,"Owner":false,"IsPublic":false}}
+{"time":"2024-10-16T15:17:17.110268352-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, mindmap_name, owner, is_public, created, updated FROM mindmaps WHERE 1=1 AND mindmap_name = ?","args":["new"]}
+{"time":"2024-10-16T15:17:17.110279282-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","username":"a","count":0}
+{"time":"2024-10-16T15:17:17.110281946-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":0}
+{"time":"2024-10-16T15:17:17.110283816-04:00","level":"INFO","msg":"Adding new mindmap","username":"a","mindmapInfo":{"ID":0,"Name":"new","Owner":"a","IsPublic":false,"NodeCount":null,"Depth":null}}
+{"time":"2024-10-16T15:17:17.110295624-04:00","level":"INFO","msg":"Retrieving mindmaps","username":"a","filter":{"ID":false,"Name":true,"Owner":true,"IsPublic":false}}
+{"time":"2024-10-16T15:17:17.110298121-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, mindmap_name, owner, is_public, created, updated FROM mindmaps WHERE 1=1 AND mindmap_name = ? AND owner = ?","args":["new","a"]}
+{"time":"2024-10-16T15:17:17.110300914-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":0,"username":"a"}
+{"time":"2024-10-16T15:17:17.11030277-04:00","level":"INFO","msg":"Transaction started"}
+{"time":"2024-10-16T15:17:17.110304506-04:00","level":"DEBUG","msg":"Executing query","query":"INSERT INTO mindmaps (mindmap_name, owner, is_public, created, updated) VALUES (?, ?, ?, ?, ?)","args":["new","a",false,"2024-10-16T15:17:17.110211696-04:00","2024-10-16T15:17:17.110211696-04:00"]}
+{"time":"2024-10-16T15:17:17.110310969-04:00","level":"INFO","msg":"Creating mindmap tables","mindmapID":1}
+{"time":"2024-10-16T15:17:17.110312971-04:00","level":"DEBUG","msg":"Executing query","query":"\n        CREATE TABLE IF NOT EXISTS nodes_1 (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            mindmap_id INTEGER NOT NULL,\n            parent_id INTEGER,\n            node_name TEXT NOT NULL,\n            index_value TEXT NOT NULL,\n            created DATETIME NOT NULL,\n            updated DATETIME NOT NULL,\n            FOREIGN KEY (mindmap_id) REFERENCES mindmaps(id)\n        );\n        CREATE TABLE IF NOT EXISTS node_content_1 (\n            node_id INTEGER,\n            key TEXT NOT NULL,\n            value TEXT NOT NULL,\n            FOREIGN KEY (node_id) REFERENCES nodes_1(id)\n        );\n    ","args":null}
+{"time":"2024-10-16T15:17:17.110388167-04:00","level":"INFO","msg":"Mindmap tables created successfully","mindmapID":1}
+{"time":"2024-10-16T15:17:17.110449703-04:00","level":"INFO","msg":"Transaction committed"}
+{"time":"2024-10-16T15:17:17.110457484-04:00","level":"INFO","msg":"Mindmap added successfully","mindmapID":1,"username":"a","mindmapName":"new"}
+{"time":"2024-10-16T15:17:17.110460524-04:00","level":"INFO","msg":"Retrieving mindmaps","username":"a","filter":{"ID":true,"Name":false,"Owner":true,"IsPublic":false}}
+{"time":"2024-10-16T15:17:17.110464008-04:00","level":"INFO","msg":"Retrieving mindmaps","username":"a","filter":{"ID":true,"Name":false,"Owner":true,"IsPublic":false}}
+{"time":"2024-10-16T15:17:17.110466325-04:00","level":"DEBUG","msg":"Querying","args":[1,"a"],"query":"SELECT id, mindmap_name, owner, is_public, created, updated FROM mindmaps WHERE 1=1 AND id = ? AND owner = ?"}
+{"time":"2024-10-16T15:17:17.110469425-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":1,"username":"a"}
+{"time":"2024-10-16T15:17:17.110471334-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":1}
+{"time":"2024-10-16T15:17:17.110473122-04:00","level":"DEBUG","msg":"Added mindmap","mindmapID":1,"mindmapName":"new"}
+{"time":"2024-10-16T15:17:17.11047514-04:00","level":"DEBUG","msg":"New mindmap details","mindmap":{"id":1,"name":"new","owner":"a","is_public":false,"root":null,"created":"2024-10-16T15:17:17.110211696-04:00","updated":"2024-10-16T15:17:17.110211696-04:00"}}
+{"time":"2024-10-16T15:17:17.110518622-04:00","level":"DEBUG","msg":"Published MindmapAdded event","mindmapID":1}
+{"time":"2024-10-16T15:17:17.110520788-04:00","level":"INFO","msg":"Mindmap added successfully","mindmapID":1,"mindmapName":"new"}
+{"time":"2024-10-16T15:17:17.110522783-04:00","level":"INFO","msg":"Mindmap added successfully","mindmapID":1}
+{"time":"2024-10-16T15:17:17.110528023-04:00","level":"DEBUG","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:17.110530149-04:00","level":"INFO","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:17.110531998-04:00","level":"INFO","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"a","Args":["new"]}}
+{"time":"2024-10-16T15:17:17.110538769-04:00","level":"INFO","msg":"Handling MindmapAdded event"}
+{"time":"2024-10-16T15:17:17.110540824-04:00","level":"DEBUG","msg":"Handling MindmapAdded event","mindmapID":1}
+{"time":"2024-10-16T15:17:17.110542717-04:00","level":"INFO","msg":"Adding new node","mindmapID":1,"parentID":-1}
+{"time":"2024-10-16T15:17:17.110544856-04:00","level":"DEBUG","msg":"Node validation complete"}
+{"time":"2024-10-16T15:17:17.110546729-04:00","level":"INFO","msg":"Retrieving nodes","mindmap":{"id":1,"name":"new","owner":"a","is_public":false,"root":null,"created":"2024-10-16T15:17:17.110211696-04:00","updated":"2024-10-16T15:17:17.110211696-04:00"},"nodeInfo":{"ID":0,"MindmapID":1,"ParentID":-1,"Name":"new","Index":"0","Content":null},"filter":{"ID":false,"MindmapID":false,"ParentID":false,"Name":true,"Index":false,"Content":false}}
+{"time":"2024-10-16T15:17:17.110563882-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, parent_id, node_name, index_value, created, updated FROM nodes_1 WHERE mindmap_id = ? AND node_name = ?","args":[1,"new"]}
+{"time":"2024-10-16T15:17:17.11056679-04:00","level":"INFO","msg":"Nodes retrieved successfully","mindmapID":1,"nodeCount":0}
+{"time":"2024-10-16T15:17:17.110568723-04:00","level":"DEBUG","msg":"Node count complete","copies":0}
+{"time":"2024-10-16T15:17:17.110570612-04:00","level":"DEBUG","msg":"Index calculation complete","index":"0"}
+{"time":"2024-10-16T15:17:17.110572595-04:00","level":"INFO","msg":"Adding new node","parentID":-1,"mindmapID":1,"nodeName":"new"}
+{"time":"2024-10-16T15:17:17.110574558-04:00","level":"INFO","msg":"Transaction started"}
+{"time":"2024-10-16T15:17:17.110576367-04:00","level":"DEBUG","msg":"Executing query","query":"INSERT INTO nodes_1 (id, mindmap_id, parent_id, node_name, index_value, created, updated) VALUES (?, ?, ?, ?, ?, ?, ?)","args":[0,1,-1,"new","0","2024-10-16T15:17:17.110554307-04:00","2024-10-16T15:17:17.110554307-04:00"]}
+{"time":"2024-10-16T15:17:17.110656528-04:00","level":"INFO","msg":"Transaction committed"}
+{"time":"2024-10-16T15:17:17.11066141-04:00","level":"INFO","msg":"Node added successfully","mindmapID":1,"nodeID":0}
+{"time":"2024-10-16T15:17:17.110667591-04:00","level":"DEBUG","msg":"Node added to storage","newID":0}
+{"time":"2024-10-16T15:17:17.11066982-04:00","level":"INFO","msg":"Retrieving nodes","mindmap":{"id":1,"name":"new","owner":"a","is_public":false,"root":{"id":0,"mindmap_id":1,"parent_id":-1,"name":"new","index":"0","created":"2024-10-16T15:17:17.110554307-04:00","updated":"2024-10-16T15:17:17.110554307-04:00"},"nodes":{"0":{"id":0,"mindmap_id":1,"parent_id":-1,"name":"new","index":"0","created":"2024-10-16T15:17:17.110554307-04:00","updated":"2024-10-16T15:17:17.110554307-04:00"}},"created":"2024-10-16T15:17:17.110211696-04:00","updated":"2024-10-16T15:17:17.110211696-04:00"},"nodeInfo":{"ID":0,"MindmapID":0,"ParentID":0,"Name":"","Index":"","Content":null},"filter":{"ID":true,"MindmapID":false,"ParentID":false,"Name":false,"Index":false,"Content":false}}
+{"time":"2024-10-16T15:17:17.110686875-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, parent_id, node_name, index_value, created, updated FROM nodes_1 WHERE mindmap_id = ? AND id = ?","args":[1,0]}
+{"time":"2024-10-16T15:17:17.110690197-04:00","level":"DEBUG","msg":"Querying","query":"SELECT key, value FROM node_content_1 WHERE node_id = ?","args":[1,0]}
+{"time":"2024-10-16T15:17:17.110692513-04:00","level":"INFO","msg":"Nodes retrieved successfully","mindmapID":1,"nodeCount":1}
+{"time":"2024-10-16T15:17:17.11069728-04:00","level":"DEBUG","msg":"In-memory structure updated","newNode":{"id":0,"mindmap_id":1,"parent_id":-1,"name":"new","index":"0","created":"2024-10-16T15:17:17.110554307-04:00","updated":"2024-10-16T15:17:17.110554307-04:00"}}
+{"time":"2024-10-16T15:17:17.110701033-04:00","level":"DEBUG","msg":"Node map initialized with root node"}
+{"time":"2024-10-16T15:17:17.110702836-04:00","level":"INFO","msg":"Node added successfully","nodeID":0,"mindmapID":1}
+{"time":"2024-10-16T15:17:17.110704836-04:00","level":"INFO","msg":"Root node added successfully","mindmapID":1}
+{"time":"2024-10-16T15:17:24.540698148-04:00","level":"INFO","msg":"Command parsed","command":{"Scope":"m","Operation":"s","Args":["new"]}}
+{"time":"2024-10-16T15:17:24.540762446-04:00","level":"INFO","msg":"Processing command through adapter manager","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"s","Args":["new"]}}
+{"time":"2024-10-16T15:17:24.540777004-04:00","level":"INFO","msg":"Running command in session","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"s","Args":["new"]}}
+{"time":"2024-10-16T15:17:24.540780221-04:00","level":"INFO","msg":"Validating command","scope":"mindmap","operation":"select"}
+{"time":"2024-10-16T15:17:24.540787082-04:00","level":"DEBUG","msg":"Validating scope and operation","scope":"mindmap","operation":"select"}
+{"time":"2024-10-16T15:17:24.540789787-04:00","level":"DEBUG","msg":"Validating mindmap command","operation":"select"}
+{"time":"2024-10-16T15:17:24.54079207-04:00","level":"DEBUG","msg":"Processing command","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"mindmap","Operation":"select","Args":["new"]}}
+{"time":"2024-10-16T15:17:24.540795709-04:00","level":"INFO","msg":"Handling mindmap select command","args":["new"]}
+{"time":"2024-10-16T15:17:24.540798566-04:00","level":"DEBUG","msg":"Selecting mindmap","mindmapName":"new"}
+{"time":"2024-10-16T15:17:24.540801275-04:00","level":"INFO","msg":"Retrieving mindmaps","filter":{"ID":false,"Name":true,"Owner":false,"IsPublic":false},"username":"a"}
+{"time":"2024-10-16T15:17:24.540806065-04:00","level":"INFO","msg":"Retrieving mindmaps","username":"a","filter":{"ID":false,"Name":true,"Owner":false,"IsPublic":false}}
+{"time":"2024-10-16T15:17:24.540808862-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, mindmap_name, owner, is_public, created, updated FROM mindmaps WHERE 1=1 AND mindmap_name = ?","args":["new"]}
+{"time":"2024-10-16T15:17:24.540812949-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":1,"username":"a"}
+{"time":"2024-10-16T15:17:24.540816119-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":1}
+{"time":"2024-10-16T15:17:24.540818192-04:00","level":"DEBUG","msg":"Mindmap selected and set in session","mindmapID":1}
+{"time":"2024-10-16T15:17:24.540820512-04:00","level":"DEBUG","msg":"Published MindmapSelected event","mindmapID":1}
+{"time":"2024-10-16T15:17:24.540822715-04:00","level":"INFO","msg":"Mindmap selected successfully","mindmapName":"new","mindmapID":1}
+{"time":"2024-10-16T15:17:24.540825028-04:00","level":"DEBUG","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:24.540827179-04:00","level":"INFO","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:24.540829436-04:00","level":"INFO","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"s","Args":["new"]}}
+{"time":"2024-10-16T15:17:24.540832192-04:00","level":"INFO","msg":"Handling MindmapSelected event"}
+{"time":"2024-10-16T15:17:24.540834705-04:00","level":"INFO","msg":"Retrieving nodes","mindmapID":1,"filter":{"ID":false,"MindmapID":false,"ParentID":false,"Name":false,"Index":false,"Content":false}}
+{"time":"2024-10-16T15:17:24.540841273-04:00","level":"INFO","msg":"Retrieving nodes","mindmap":{"id":1,"name":"new","owner":"a","is_public":false,"root":null,"created":"2024-10-16T15:17:17.110211696-04:00","updated":"2024-10-16T15:17:17.110211696-04:00"},"nodeInfo":{"ID":0,"MindmapID":0,"ParentID":0,"Name":"","Index":"","Content":null},"filter":{"ID":false,"MindmapID":false,"ParentID":false,"Name":false,"Index":false,"Content":false}}
+{"time":"2024-10-16T15:17:24.540868205-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, parent_id, node_name, index_value, created, updated FROM nodes_1 WHERE mindmap_id = ?","args":[1]}
+{"time":"2024-10-16T15:17:24.540935393-04:00","level":"DEBUG","msg":"Querying","query":"SELECT key, value FROM node_content_1 WHERE node_id = ?","args":[1,0]}
+{"time":"2024-10-16T15:17:24.540952926-04:00","level":"INFO","msg":"Nodes retrieved successfully","mindmapID":1,"nodeCount":1}
+{"time":"2024-10-16T15:17:24.54095641-04:00","level":"INFO","msg":"Nodes retrieved successfully","count":1}
+{"time":"2024-10-16T15:17:24.540958636-04:00","level":"INFO","msg":"Nodes loaded for mindmap","mindmapID":1,"nodeCount":1}
+{"time":"2024-10-16T15:17:31.917303269-04:00","level":"INFO","msg":"Command parsed","command":{"Scope":"m","Operation":"l","Args":[]}}
+{"time":"2024-10-16T15:17:31.917354882-04:00","level":"INFO","msg":"Processing command through adapter manager","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"l","Args":[]}}
+{"time":"2024-10-16T15:17:31.91736578-04:00","level":"INFO","msg":"Running command in session","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"l","Args":[]}}
+{"time":"2024-10-16T15:17:31.917368464-04:00","level":"INFO","msg":"Validating command","scope":"mindmap","operation":"list"}
+{"time":"2024-10-16T15:17:31.917370793-04:00","level":"DEBUG","msg":"Validating scope and operation","scope":"mindmap","operation":"list"}
+{"time":"2024-10-16T15:17:31.917372756-04:00","level":"DEBUG","msg":"Validating mindmap command","operation":"list"}
+{"time":"2024-10-16T15:17:31.91737467-04:00","level":"DEBUG","msg":"Processing command","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"mindmap","Operation":"list","Args":[]}}
+{"time":"2024-10-16T15:17:31.917376996-04:00","level":"INFO","msg":"Handling mindmap list command","args":[]}
+{"time":"2024-10-16T15:17:31.917379235-04:00","level":"INFO","msg":"Retrieving mindmaps","username":"a","filter":{"ID":false,"Name":false,"Owner":false,"IsPublic":false}}
+{"time":"2024-10-16T15:17:31.917383323-04:00","level":"INFO","msg":"Retrieving mindmaps","username":"a","filter":{"ID":false,"Name":false,"Owner":false,"IsPublic":false}}
+{"time":"2024-10-16T15:17:31.917385465-04:00","level":"DEBUG","msg":"Querying","query":"SELECT id, mindmap_name, owner, is_public, created, updated FROM mindmaps WHERE 1=1","args":null}
+{"time":"2024-10-16T15:17:31.917388-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":1,"username":"a"}
+{"time":"2024-10-16T15:17:31.917390563-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":1}
+{"time":"2024-10-16T15:17:31.917392338-04:00","level":"INFO","msg":"Mindmaps retrieved successfully","count":1}
+{"time":"2024-10-16T15:17:31.917394167-04:00","level":"DEBUG","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:31.917396142-04:00","level":"INFO","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:31.917397936-04:00","level":"INFO","msg":"Command executed successfully","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"l","Args":[]}}
+{"time":"2024-10-16T15:17:34.105998592-04:00","level":"INFO","msg":"Command parsed","command":{"Scope":"m","Operation":"l","Args":["new"]}}
+{"time":"2024-10-16T15:17:34.106029658-04:00","level":"INFO","msg":"Processing command through adapter manager","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"l","Args":["new"]}}
+{"time":"2024-10-16T15:17:34.10604572-04:00","level":"INFO","msg":"Running command in session","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"l","Args":["new"]}}
+{"time":"2024-10-16T15:17:34.106048046-04:00","level":"INFO","msg":"Validating command","scope":"mindmap","operation":"list"}
+{"time":"2024-10-16T15:17:34.106049703-04:00","level":"DEBUG","msg":"Validating scope and operation","scope":"mindmap","operation":"list"}
+{"time":"2024-10-16T15:17:34.106051355-04:00","level":"DEBUG","msg":"Validating mindmap command","operation":"list"}
+{"time":"2024-10-16T15:17:38.707431825-04:00","level":"INFO","msg":"Command parsed","command":{"Scope":"m","Operation":"l","Args":["1"]}}
+{"time":"2024-10-16T15:17:38.70748777-04:00","level":"INFO","msg":"Processing command through adapter manager","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"m","Operation":"l","Args":["1"]}}
+{"time":"2024-10-16T15:17:38.70749757-04:00","level":"INFO","msg":"Running command in session","command":{"Scope":"m","Operation":"l","Args":["1"]},"sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:17:38.707499619-04:00","level":"INFO","msg":"Validating command","operation":"list","scope":"mindmap"}
+{"time":"2024-10-16T15:17:38.707501259-04:00","level":"DEBUG","msg":"Validating scope and operation","scope":"mindmap","operation":"list"}
+{"time":"2024-10-16T15:17:38.707502745-04:00","level":"DEBUG","msg":"Validating mindmap command","operation":"list"}
+{"time":"2024-10-16T15:22:11.644400103-04:00","level":"DEBUG","msg":"Running cleanup for inactive sessions"}
+{"time":"2024-10-16T15:24:06.789426578-04:00","level":"INFO","msg":"Command parsed","command":{"Scope":"exit","Operation":"","Args":[]}}
+{"time":"2024-10-16T15:24:06.789524111-04:00","level":"INFO","msg":"Processing command through adapter manager","command":{"Scope":"exit","Operation":"","Args":[]},"sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:24:06.789539225-04:00","level":"INFO","msg":"Running command in session","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y=","command":{"Scope":"exit","Operation":"","Args":[]}}
+{"time":"2024-10-16T15:24:06.789543063-04:00","level":"INFO","msg":"Validating command","operation":"","scope":"exit"}
+{"time":"2024-10-16T15:24:06.789545999-04:00","level":"DEBUG","msg":"Validating scope and operation","scope":"exit","operation":""}
+{"time":"2024-10-16T15:24:06.789561693-04:00","level":"INFO","msg":"CLI stopped"}
+{"time":"2024-10-16T15:24:06.789563871-04:00","level":"INFO","msg":"Application shutting down"}
+{"time":"2024-10-16T15:24:06.789565861-04:00","level":"INFO","msg":"CLI adapter stopping"}
+{"time":"2024-10-16T15:24:06.789568358-04:00","level":"DEBUG","msg":"Removed session during adapter stop","sessionID":"vkd1bPiIIMBx0vL6gQL17HXSUqi9IpaKLjwWJ3yg23Y="}
+{"time":"2024-10-16T15:24:06.789570734-04:00","level":"INFO","msg":"CLI adapter stopped"}
+{"time":"2024-10-16T15:24:06.789572767-04:00","level":"INFO","msg":"AdapterManager shut down"}
+{"time":"2024-10-16T15:24:06.789574623-04:00","level":"INFO","msg":"Stopping cleanup routine"}
+{"time":"2024-10-16T15:24:06.78957656-04:00","level":"INFO","msg":"Closing storage"}
+{"time":"2024-10-16T15:24:06.789578431-04:00","level":"INFO","msg":"Closing SQLite database"}
+{"time":"2024-10-16T15:24:06.789580342-04:00","level":"INFO","msg":"Stopped cleanup routine"}
+{"time":"2024-10-16T15:24:06.804248701-04:00","level":"INFO","msg":"SQLite database closed successfully"}
