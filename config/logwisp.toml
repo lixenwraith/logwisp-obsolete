@@ -1,0 +1,34 @@
+# Example configuration
+mode = "service"
+port = 8080
+
+[logger]
+level = "INFO"
+directory = "/var/log/logwisp"
+buffer_size = 1000
+
+[monitor]
+check_period_ms = 100
+
+[monitor.paths.app1]
+path = "/var/log/app1"
+pattern = "*.log"
+is_file = false
+
+[monitor.paths.app2]
+path = "/var/log/app2/service.log"
+is_file = true
+
+[monitor.paths.app3]
+path = "/var/log/app3"
+pattern = "*.json"
+is_file = false
+
+[stream]
+buffer_size = 1000
+flush_interval_ms = 100
+
+[stream.rate_limit]
+requests_per_second = 10  # Default if not specified
+burst_size = 20          # Default if not specified
+client_timeout_minutes = 60  # Default if not specified
