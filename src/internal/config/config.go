@@ -4,11 +4,12 @@ package config
 
 import (
 	"fmt"
-	"logwisp/src/pkg/tinytoml"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/LixenWraith/logger"
+	"github.com/LixenWraith/tinytoml"
 )
 
 // OperationMode defines how logwisp will run
@@ -33,6 +34,8 @@ const (
 
 // Config holds the complete configuration for logwisp
 type Config struct {
+	mu sync.RWMutex // Protects config fields during reload
+
 	// Mode determines whether to run as service or viewer
 	Mode OperationMode `toml:"mode"`
 	// Port defines the service listening port
@@ -98,17 +101,48 @@ func LoadConfig(configPath string) (*Config, error) {
 		return nil, fmt.Errorf("reading config file: %w", err)
 	}
 
-	cfg := &Config{}
-	if err := tinytoml.Unmarshal(data, cfg); err != nil {
+	var newCfg Config
+	if err := tinytoml.Unmarshal(data, &newCfg); err != nil {
 		return nil, fmt.Errorf("parsing config file: %w", err)
 	}
 
-	if err := cfg.validate(); err != nil {
+	if err := newCfg.validate(); err != nil {
 		return nil, fmt.Errorf("invalid configuration: %w", err)
 	}
 
-	cfg.setDefaults()
-	return cfg, nil
+	newCfg.setDefaults()
+	return &newCfg, nil
+}
+
+// Reload reloads configuration from the same file
+func (c *Config) Reload(configPath string) error {
+	newCfg, err := LoadConfig(configPath)
+	if err != nil {
+		return fmt.Errorf("reload failed: %w", err)
+	}
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	// Copy all fields from new config
+	*c = *newCfg
+	return nil
+}
+
+// GetMonitorTargets is reader method with mutex protection
+func (c *Config) GetMonitorTargets() []MonitorTarget {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	var targets []MonitorTarget
+	for _, path := range c.Monitor.Paths {
+		targets = append(targets, MonitorTarget{
+			Path:    path.Path,
+			Pattern: path.Pattern,
+			IsFile:  path.IsFile,
+		})
+	}
+	return targets
 }
 
 // setDefaults sets default values for optional fields
@@ -316,19 +350,6 @@ func (c *Config) validateStream() error {
 	}
 
 	return nil
-}
-
-// GetMonitorTargets returns the list of monitoring targets
-func (c *Config) GetMonitorTargets() []MonitorTarget {
-	var targets []MonitorTarget
-	for _, path := range c.Monitor.Paths {
-		targets = append(targets, MonitorTarget{
-			Path:    path.Path,
-			Pattern: path.Pattern,
-			IsFile:  path.IsFile,
-		})
-	}
-	return targets
 }
 
 // MonitorTarget represents a validated monitoring target

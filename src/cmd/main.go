@@ -34,7 +34,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Load configuration
+	// Load initial configuration
 	cfg, err := config.LoadConfig(configFile)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error loading configuration: %v\n", err)
@@ -47,15 +47,7 @@ func main() {
 	}
 
 	// Initialize logger
-	logCfg := &logger.Config{
-		Level:      cfg.Logger.Level,
-		Name:       cfg.Logger.Name,
-		Directory:  cfg.Logger.Directory,
-		BufferSize: cfg.Logger.BufferSize,
-		MaxSizeMB:  cfg.Logger.MaxSizeMB,
-	}
-
-	if err := logger.Init(ctx, logCfg); err != nil {
+	if err := logger.Init(ctx, &cfg.Logger); err != nil {
 		fmt.Fprintf(os.Stderr, "Error initializing logger: %v\n", err)
 		os.Exit(1)
 	}
@@ -72,12 +64,21 @@ func main() {
 	// Log startup information
 	logger.Info(ctx, "Starting logwisp",
 		"mode", cfg.Mode,
-		"version", "0.1.0",
 		"config", configFile)
 
-	// Create done channel for graceful shutdown
-	done := make(chan os.Signal, 1)
-	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
+	// Create signal channels
+	shutdown := make(chan os.Signal, 1) // Shutdown, service stop
+	reload := make(chan os.Signal, 1)   // Reload config
+
+	// Register signal handlers and ensure cleanup
+	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(reload, syscall.SIGHUP)
+	defer signal.Stop(shutdown)
+	defer signal.Stop(reload)
+
+	// Create context for reload handler
+	reloadCtx, reloadCancel := context.WithCancel(ctx)
+	defer reloadCancel()
 
 	// Initialize appropriate mode
 	var app interface {
@@ -112,16 +113,34 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Handle configuration reloads
+	go func() {
+		for {
+			select {
+			case <-reloadCtx.Done():
+				logger.Info(ctx, "Stopping config reload handler")
+				return
+			case <-reload:
+				logger.Info(ctx, "Received reload signal, reloading configuration")
+				if err := cfg.Reload(configFile); err != nil {
+					logger.Error(ctx, "Failed to reload configuration", "error", err)
+					continue
+				}
+				logger.Info(ctx, "Configuration reloaded successfully")
+			}
+		}
+	}()
+
 	// Wait for shutdown signal
 	select {
-	case sig := <-done:
+	case sig := <-shutdown:
 		logger.Info(ctx, "Received shutdown signal", "signal", sig)
 	case <-ctx.Done():
 		logger.Info(ctx, "Context cancelled")
 	}
 
 	// Initiate graceful shutdown
-	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second) // Fixed 5 second timeout
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer shutdownCancel()
 
 	if err := app.Stop(shutdownCtx); err != nil {
