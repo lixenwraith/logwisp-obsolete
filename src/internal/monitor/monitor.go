@@ -10,7 +10,8 @@ import (
 	"time"
 
 	"logwisp/src/internal/transport"
-	"logwisp/src/pkg/logger"
+
+	"github.com/LixenWraith/logger"
 )
 
 // MonitorTarget defines a path to be monitored

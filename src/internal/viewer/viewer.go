@@ -17,7 +17,8 @@ import (
 
 	"logwisp/src/internal/config"
 	"logwisp/src/internal/transport"
-	"logwisp/src/pkg/logger"
+
+	"github.com/LixenWraith/logger"
 )
 
 // ANSI color codes remain unchanged

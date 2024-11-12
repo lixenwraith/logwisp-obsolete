@@ -13,7 +13,8 @@ import (
 	"time"
 
 	"logwisp/src/internal/transport"
-	"logwisp/src/pkg/logger"
+
+	"github.com/LixenWraith/logger"
 )
 
 // fileWatcher implements watching of a single file

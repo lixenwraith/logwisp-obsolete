@@ -7,6 +7,8 @@ import (
 	"logwisp/src/pkg/tinytoml"
 	"os"
 	"path/filepath"
+
+	"github.com/LixenWraith/logger"
 )
 
 // OperationMode defines how logwisp will run
@@ -26,7 +28,6 @@ const (
 	minBufferSize     = 100
 	defaultBufferSize = 1000
 	minCheckPeriod    = 100 // milliseconds
-	maxNestingLevel   = 3
 	defaultPattern    = "*.log"
 )
 
@@ -38,11 +39,7 @@ type Config struct {
 	Port int `toml:"port"`
 
 	// Logger configuration section
-	Logger struct {
-		Level      string `toml:"level" validate:"oneof=DEBUG INFO WARN ERROR"`
-		Directory  string `toml:"directory"`
-		BufferSize int    `toml:"buffer_size"`
-	} `toml:"logger"`
+	Logger logger.Config `toml:"logger"`
 
 	// Security configuration section
 	Security struct {
@@ -116,14 +113,21 @@ func LoadConfig(configPath string) (*Config, error) {
 
 // setDefaults sets default values for optional fields
 func (c *Config) setDefaults() {
-	if c.Logger.Level == "" {
-		c.Logger.Level = "INFO"
+	// Logger defaults
+	if c.Logger.Level == 0 {
+		c.Logger.Level = logger.LevelInfo
+	}
+	if c.Logger.Name == "" {
+		c.Logger.Name = "logwisp"
 	}
 	if c.Logger.Directory == "" {
 		c.Logger.Directory = filepath.Join(os.TempDir(), "logwisp", "logs")
 	}
 	if c.Logger.BufferSize < minBufferSize {
 		c.Logger.BufferSize = defaultBufferSize
+	}
+	if c.Logger.MaxSizeMB <= 0 {
+		c.Logger.MaxSizeMB = 10 // 10MB default max size
 	}
 	if c.Monitor.CheckPeriod < minCheckPeriod {
 		c.Monitor.CheckPeriod = minCheckPeriod
@@ -187,15 +191,34 @@ func (c *Config) validatePort() error {
 }
 
 func (c *Config) validateLogger() error {
-	switch c.Logger.Level {
-	case "", "DEBUG", "INFO", "WARN", "ERROR":
-		// Valid levels
-	default:
+	validLevels := map[int]bool{
+		logger.LevelDebug: true,
+		logger.LevelInfo:  true,
+		logger.LevelWarn:  true,
+		logger.LevelError: true,
+	}
+
+	if !validLevels[c.Logger.Level] {
 		return &ValidationError{
 			Field:   "logger.level",
-			Message: fmt.Sprintf("invalid log level: %s", c.Logger.Level),
+			Message: fmt.Sprintf("invalid log level: %d", c.Logger.Level),
 		}
 	}
+
+	if c.Logger.BufferSize < minBufferSize {
+		return &ValidationError{
+			Field:   "logger.buffer_size",
+			Message: fmt.Sprintf("buffer size must be at least %d", minBufferSize),
+		}
+	}
+
+	if c.Logger.MaxSizeMB <= 0 {
+		return &ValidationError{
+			Field:   "logger.max_size_mb",
+			Message: "max size must be positive",
+		}
+	}
+
 	return nil
 }
 

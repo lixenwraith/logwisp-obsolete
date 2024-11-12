@@ -14,7 +14,8 @@ import (
 	"logwisp/src/internal/config"
 	"logwisp/src/internal/service"
 	"logwisp/src/internal/viewer"
-	"logwisp/src/pkg/logger"
+
+	"github.com/LixenWraith/logger"
 )
 
 var (
@@ -48,18 +49,20 @@ func main() {
 	// Initialize logger
 	logCfg := &logger.Config{
 		Level:      cfg.Logger.Level,
+		Name:       cfg.Logger.Name,
 		Directory:  cfg.Logger.Directory,
 		BufferSize: cfg.Logger.BufferSize,
+		MaxSizeMB:  cfg.Logger.MaxSizeMB,
 	}
 
-	if err := logger.Init(logCfg); err != nil {
+	if err := logger.Init(ctx, logCfg); err != nil {
 		fmt.Fprintf(os.Stderr, "Error initializing logger: %v\n", err)
 		os.Exit(1)
 	}
 
 	// Ensure logger shutdown
 	defer func() {
-		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second) // TODO: check if context cancellation can be used instead
 		defer shutdownCancel()
 		if err := logger.Shutdown(shutdownCtx); err != nil {
 			fmt.Fprintf(os.Stderr, "Error shutting down logger: %v\n", err)

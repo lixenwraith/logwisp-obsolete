@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"logwisp/src/pkg/logger"
+	"github.com/LixenWraith/logger"
 )
 
 // folderWatcher implements watching of a directory

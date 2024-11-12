@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"logwisp/src/pkg/logger"
+	"github.com/LixenWraith/logger"
 )
 
 // LogEntry represents a single log message in the stream

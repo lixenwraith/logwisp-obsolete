@@ -4,12 +4,13 @@ package middleware
 
 import (
 	"context"
-	"logwisp/src/pkg/logger"
 	"net/http"
 	"sync"
 	"time"
 
 	"golang.org/x/time/rate"
+
+	"github.com/LixenWraith/logger"
 )
 
 // RateLimiterConfig holds configuration for rate limiting

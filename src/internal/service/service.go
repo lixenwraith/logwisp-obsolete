@@ -14,7 +14,8 @@ import (
 	"logwisp/src/internal/middleware"
 	"logwisp/src/internal/monitor"
 	"logwisp/src/internal/transport"
-	"logwisp/src/pkg/logger"
+
+	"github.com/LixenWraith/logger"
 )
 
 // Service represents the log monitoring and streaming service
