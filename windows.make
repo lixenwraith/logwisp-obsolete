@@ -1,0 +1,4 @@
+-o windows
+-a amd64
+-s src/cmd/main.go
+-t bin/logwisp_windows
