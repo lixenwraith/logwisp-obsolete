@@ -24,7 +24,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configFile, "config", "/etc/logwisp/logwisp.toml", "path to configuration file")
+	// TODO: cli > env > default
+	flag.StringVar(&configFile, "config", "/usr/local/etc/logwisp/logwisp.toml", "path to configuration file")
 	flag.BoolVar(&viewMode, "view", false, "run in viewer mode")
 	flag.Parse()
 }
@@ -35,7 +36,7 @@ func main() {
 	defer cancel()
 
 	// Load initial configuration
-	cfg, err := config.LoadConfig(configFile)
+	cfg, err := config.Load(configFile)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error loading configuration: %v\n", err)
 		os.Exit(1)

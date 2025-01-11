@@ -38,36 +38,32 @@ type Config struct {
 
 	// Mode determines whether to run as service or viewer
 	Mode OperationMode `toml:"mode"`
+
 	// Port defines the service listening port
 	Port int `toml:"port"`
 
 	// Logger configuration section
-	Logger logger.Config `toml:"logger"`
+	Logger logger.LoggerConfig `toml:"logger"`
 
 	// Security configuration section
-	Security struct {
-		TLSEnabled  bool   `toml:"tls_enabled"`
-		TLSCertFile string `toml:"tls_cert_file"`
-		TLSKeyFile  string `toml:"tls_key_file"`
-
-		AuthEnabled  bool   `toml:"auth_enabled"`
-		AuthUsername string `toml:"auth_username"`
-		AuthPassword string `toml:"auth_password"`
-	} `toml:"security"`
+	Security SecurityConfig `toml:"security"`
 
 	// Monitor configuration
-	Monitor struct {
-		// Targets is a collection of monitored paths
-		Paths       map[string]MonitorPath `toml:"paths"`
-		CheckPeriod int                    `toml:"check_period_ms"`
-	} `toml:"monitor"`
+	Monitor MonitorConfig `toml:"monitor"`
 
 	// Stream configuration
-	Stream struct {
-		BufferSize      int             `toml:"buffer_size"`
-		FlushIntervalMs int             `toml:"flush_interval_ms"`
-		RateLimit       RateLimitConfig `toml:"rate_limit"`
-	} `toml:"stream"`
+	Stream StreamConfig `toml:"stream"`
+}
+
+// SecurityConfig holds security settings for streaming
+type SecurityConfig struct {
+	TLSEnabled  bool   `toml:"tls_enabled"`
+	TLSCertFile string `toml:"tls_cert_file"`
+	TLSKeyFile  string `toml:"tls_key_file"`
+
+	AuthEnabled  bool   `toml:"auth_enabled"`
+	AuthUsername string `toml:"auth_username"`
+	AuthPassword string `toml:"auth_password"`
 }
 
 // RateLimitConfig holds rate limiting settings
@@ -77,11 +73,25 @@ type RateLimitConfig struct {
 	ClientTimeoutMinutes int `toml:"client_timeout_minutes"`
 }
 
+// MonitorConfig hold the settings for paths to the monitored logs
+type MonitorConfig struct {
+	// Targets is a collection of monitored paths
+	Paths       map[string]MonitorPath `toml:"paths"`
+	CheckPeriod int                    `toml:"check_period_ms"`
+}
+
 // MonitorPath represents a path to be monitored
 type MonitorPath struct {
 	Path    string `toml:"path"`
 	Pattern string `toml:"pattern"`
 	IsFile  bool   `toml:"is_file"`
+}
+
+// StreamConfig holds the stream settings
+type StreamConfig struct {
+	BufferSize      int             `toml:"buffer_size"`
+	FlushIntervalMs int             `toml:"flush_interval_ms"`
+	RateLimit       RateLimitConfig `toml:"rate_limit"`
 }
 
 // ValidationError represents a configuration validation error
@@ -94,29 +104,48 @@ func (e *ValidationError) Error() string {
 	return fmt.Sprintf("%s: %s", e.Field, e.Message)
 }
 
-// LoadConfig reads and parses the configuration file
-func LoadConfig(configPath string) (*Config, error) {
-	data, err := os.ReadFile(configPath)
-	if err != nil {
-		return nil, fmt.Errorf("reading config file: %w", err)
+// Load implements a two-phase configuration loading:
+// 1. Set program defaults
+// 2. Override with file configuration if exists
+func Load(configPath string) (*Config, error) {
+	// Initialize with defaults
+	cfg := new(Config)
+	cfg.setDefaults()
+
+	// Ensure configuration directory exists
+	configDir := filepath.Dir(configPath)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		return nil, fmt.Errorf("creating config directory: %w", err)
 	}
 
-	var newCfg Config
-	if err := tinytoml.Unmarshal(data, &newCfg); err != nil {
-		return nil, fmt.Errorf("parsing config file: %w", err)
+	// Check if configuration file exists
+	if _, err := os.Stat(configPath); err == nil {
+		data, err := os.ReadFile(configPath)
+		if err != nil {
+			return nil, fmt.Errorf("reading config file: %w", err)
+		}
+
+		// Override defaults with file configuration
+		if err := tinytoml.Unmarshal(data, cfg); err != nil {
+			return nil, fmt.Errorf("parsing config file: %w", err)
+		}
 	}
 
-	if err := newCfg.validate(); err != nil {
+	// Ensure log directory exists
+	if err := os.MkdirAll(cfg.Logger.Directory, 0755); err != nil {
+		return nil, fmt.Errorf("creating log directory: %w", err)
+	}
+
+	if err := cfg.validate(); err != nil {
 		return nil, fmt.Errorf("invalid configuration: %w", err)
 	}
 
-	newCfg.setDefaults()
-	return &newCfg, nil
+	return cfg, nil
 }
 
 // Reload reloads configuration from the same file
 func (c *Config) Reload(configPath string) error {
-	newCfg, err := LoadConfig(configPath)
+	newCfg, err := Load(configPath)
 	if err != nil {
 		return fmt.Errorf("reload failed: %w", err)
 	}
@@ -124,8 +153,16 @@ func (c *Config) Reload(configPath string) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	// Copy all fields from new config
+	// Preserve runtime mode
+	currentMode := c.Mode
+	if newCfg.Mode != currentMode {
+		return fmt.Errorf("cannot change mode during reload")
+	}
+
+	// Apply new configuration
 	*c = *newCfg
+	c.Mode = currentMode
+
 	return nil
 }
 
@@ -147,27 +184,35 @@ func (c *Config) GetMonitorTargets() []MonitorTarget {
 
 // setDefaults sets default values for optional fields
 func (c *Config) setDefaults() {
+	c.Mode = ServiceMode
+	c.Port = 8080
+
 	// Logger defaults
-	if c.Logger.Level == 0 {
-		c.Logger.Level = logger.LevelInfo
+	c.Logger = logger.LoggerConfig{
+		Level:          logger.LevelDebug,
+		Name:           "logwisp",
+		Directory:      "/var/log/logwisp",
+		BufferSize:     defaultBufferSize,
+		MaxSizeMB:      5,   // 5MB for logwisp logs
+		MaxTotalSizeMB: 50,  // 50MB total log size
+		MinDiskFreeMB:  100, // 100MB minimum free space
 	}
-	if c.Logger.Name == "" {
-		c.Logger.Name = "logwisp"
+
+	// Monitor defaults
+	c.Monitor = MonitorConfig{
+		Paths:       make(map[string]MonitorPath),
+		CheckPeriod: minCheckPeriod,
 	}
-	if c.Logger.Directory == "" {
-		c.Logger.Directory = filepath.Join(os.TempDir(), "logwisp", "logs")
-	}
-	if c.Logger.BufferSize < minBufferSize {
-		c.Logger.BufferSize = defaultBufferSize
-	}
-	if c.Logger.MaxSizeMB <= 0 {
-		c.Logger.MaxSizeMB = 10 // 10MB default max size
-	}
-	if c.Monitor.CheckPeriod < minCheckPeriod {
-		c.Monitor.CheckPeriod = minCheckPeriod
-	}
-	if c.Stream.BufferSize < minBufferSize {
-		c.Stream.BufferSize = defaultBufferSize
+
+	// Stream defaults
+	c.Stream = StreamConfig{
+		BufferSize:      defaultBufferSize,
+		FlushIntervalMs: 1000,
+		RateLimit: RateLimitConfig{
+			RequestsPerSecond:    100,
+			BurstSize:            1000,
+			ClientTimeoutMinutes: 5,
+		},
 	}
 }
 
@@ -225,7 +270,7 @@ func (c *Config) validatePort() error {
 }
 
 func (c *Config) validateLogger() error {
-	validLevels := map[int]bool{
+	validLevels := map[int64]bool{
 		logger.LevelDebug: true,
 		logger.LevelInfo:  true,
 		logger.LevelWarn:  true,
@@ -250,6 +295,28 @@ func (c *Config) validateLogger() error {
 		return &ValidationError{
 			Field:   "logger.max_size_mb",
 			Message: "max size must be positive",
+		}
+	}
+
+	if c.Logger.MaxTotalSizeMB <= 0 {
+		return &ValidationError{
+			Field:   "logger.max_total_size_mb",
+			Message: "total maximum size must be positive",
+		}
+	}
+
+	if c.Logger.MinDiskFreeMB <= 0 {
+		return &ValidationError{
+			Field:   "logger.min_disk_free_mb",
+			Message: "minimum free disk space must be positive",
+		}
+	}
+
+	if c.Logger.MaxTotalSizeMB <= c.Logger.MaxSizeMB {
+		return &ValidationError{
+			Field: "logger.max_total_size_mb",
+			Message: fmt.Sprintf("total maximum size (%d MB) must be greater than individual file size limit (%d MB)",
+				c.Logger.MaxTotalSizeMB, c.Logger.MaxSizeMB),
 		}
 	}
 
@@ -346,6 +413,13 @@ func (c *Config) validateStream() error {
 		return &ValidationError{
 			Field:   "stream.rate_limit.client_timeout_minutes",
 			Message: "client timeout cannot be negative",
+		}
+	}
+
+	if c.Stream.FlushIntervalMs < 100 {
+		return &ValidationError{
+			Field:   "stream.flush_interval_ms",
+			Message: "flush interval must be at least 100ms",
 		}
 	}
 

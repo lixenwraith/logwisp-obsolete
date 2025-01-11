@@ -1,0 +1,4 @@
+-o linux
+-a amd64
+-s src/cmd/main.go
+-b bin/logwisp_linux

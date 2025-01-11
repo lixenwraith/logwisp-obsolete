@@ -91,4 +91,4 @@ Use "build.sh" to build.
 
 ## License
 
-MIT License
+BSD-3
