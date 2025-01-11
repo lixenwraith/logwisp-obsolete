@@ -3,25 +3,16 @@ mode = "service"
 port = 8080
 
 [logger]
-level = "INFO"
-directory = "/var/log/logwisp"
+level = -4
+directory = "./logs"
 buffer_size = 1000
 
 [monitor]
 check_period_ms = 100
 
 [monitor.paths.app1]
-path = "/var/log/app1"
+path = "./data"
 pattern = "*.log"
-is_file = false
-
-[monitor.paths.app2]
-path = "/var/log/app2/service.log"
-is_file = true
-
-[monitor.paths.app3]
-path = "/var/log/app3"
-pattern = "*.json"
 is_file = false
 
 [stream]

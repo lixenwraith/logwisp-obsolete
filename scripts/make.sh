@@ -21,7 +21,7 @@ VALID_ARCH="amd64 arm arm64"          # Add more as needed
 
 # Function to print usage help
 print_usage() {
-  echo "Usage: $0 [-o os] [-a arch] [-s source] [-b binary] [-c config_file]"
+  echo "Usage: $0 [-o os] [-a arch] [-s source] [-t target] [-c config_file]"
   echo "  -o os          : Target operating system. Default: current OS ($(go env GOOS))."
   echo "                   Acceptable values: $VALID_OS"
   echo "  -a arch        : Target architecture. Default: current architecture ($(go env GOARCH))."
@@ -32,19 +32,19 @@ print_usage() {
   echo "Options can appear in any order."
   echo "A 'conf.make' file in the current directory is loaded by default if it exists."
   echo "'conf.make' or custom make files can contain any of the functions that overrides default config."
-  echo "A line in .make file should contain a single option flag and its value, example: '-b ./bin/main'."
+  echo "A line in .make file should contain a single option flag and its value, example: '-t ./bin/main'."
   echo "Command-line arguments override 'conf.make' and any custom config file."
 }
 
 # --- Local Configuration File Parsing (conf.make) ---
 
 if [ -f "conf.make" ]; then
-  while IFS= read -r line; do
+  while IFS= read -r line || [[ -n "$line" ]]; do
     case "$line" in
-      -o\ *) TARGET_OS="${line#*-o }" ;;
-      -a\ *) TARGET_ARCH="${line#*-a }" ;;
-      -s\ *) SRC_PATH="${line#*-s }" ;;
-      -t\ *) EXEC_PATH="${line#*-t }" ;;
+      -o*) TARGET_OS="${line#*-o }" ;;
+      -a*) TARGET_ARCH="${line#*-a }" ;;
+      -s*) SRC_PATH="${line#*-s }" ;;
+      -t*) EXEC_PATH="${line#*-t }" ;;
       *) ;;  # Ignore lines that don't match the pattern
     esac
   done < "conf.make"
@@ -100,12 +100,12 @@ if [ -n "$CUSTOM_CONFIG" ]; then
     exit 1
   fi
 
-  while IFS= read -r line; do
+  while IFS= read -r line || [[ -n "$line" ]]; do
     case "$line" in
-      -o\ *) TARGET_OS="${line#*-o }" ;;
-      -a\ *) TARGET_ARCH="${line#*-a }" ;;
-      -s\ *) SRC_PATH="${line#*-s }" ;;
-      -t\ *) EXEC_PATH="${line#*-t }" ;;
+      -o*) TARGET_OS="${line#*-o }" ;;
+      -a*) TARGET_ARCH="${line#*-a }" ;;
+      -s*) SRC_PATH="${line#*-s }" ;;
+      -t*) EXEC_PATH="${line#*-t }" ;;
       *) ;;  # Ignore lines that don't match the pattern
     esac
   done < "$CUSTOM_CONFIG"
