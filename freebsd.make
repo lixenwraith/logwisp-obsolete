@@ -1,4 +1,4 @@
 -o freebsd
 -a amd64
--s src/cmd/main.go
+-s src/cmd/server/main.go
 -t bin/logwisp_freebsd
