@@ -1,3 +1,5 @@
+** This program went through a major restructuring and dependency change, the update can be found at: https://github.com/lixenwraith/logwisp **
+
 # LogWisp
 
 LogWisp is a lightweight log streaming and viewing system written in Go. It provides real-time log monitoring capabilities with a focus on reliability and simplicity.
